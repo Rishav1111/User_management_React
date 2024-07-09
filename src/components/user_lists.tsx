@@ -1,6 +1,8 @@
 import { TableData } from "./tabledata";
 import { TableHeader } from "./tableheader";
+import Button from "./button";
 import Navbar from "./navbar";
+import React from "react";
 export const UserList = () => {
   const users = [
     {
@@ -10,7 +12,7 @@ export const UserList = () => {
       phoneNumber: "9888888888",
       gender: "Male",
       age: 21,
-      image: "./photo.jpg",
+      image: "./profile.jpg",
     },
     {
       id: 2,
@@ -19,7 +21,7 @@ export const UserList = () => {
       phoneNumber: "1234567890",
       gender: "Male",
       age: 30,
-      image: "./photo.jpg",
+      image: "./profile.jpg",
     },
     {
       id: 3,
@@ -28,7 +30,7 @@ export const UserList = () => {
       phoneNumber: "0987654321",
       gender: "Female",
       age: 25,
-      image: "./photo.jpg",
+      image: "./profile.jpg",
     },
     {
       id: 4,
@@ -37,7 +39,7 @@ export const UserList = () => {
       phoneNumber: "0987654321",
       gender: "Female",
       age: 25,
-      image: "./photo.jpg",
+      image: "./profile.jpg",
     },
     {
       id: 5,
@@ -46,13 +48,13 @@ export const UserList = () => {
       phoneNumber: "0987654321",
       gender: "Female",
       age: 25,
-      image: "./photo.jpg",
+      image: "./profile.jpg",
     },
   ];
   return (
     <>
       <Navbar />
-      <div className="bg-white p-5 h-auto m-20 w-auto rounded shadow-lg overflow-y-auto">
+      <div className="bg-white p-5 h-full m-24 w-auto rounded shadow-lg overflow-y-auto">
         <h2 className="mb-5 text-center font-bold text-sm sm:text-2xl">
           User Lists
         </h2>
@@ -88,7 +90,20 @@ export const UserList = () => {
                         alt={user.fullName}
                       />
                     </TableData>
-                    <TableData>Action</TableData>
+                    <TableData>
+                      <Button
+                        color="bg-blue-600 hover:bg-blue-900"
+                        type="submit"
+                        text="Edit"
+                        onClick={undefined}
+                      />
+                      <Button
+                        color="bg-red-600 hover:bg-red-900"
+                        type="submit"
+                        text="Delete"
+                        onClick={undefined}
+                      />
+                    </TableData>
                   </tr>
                 );
               })}

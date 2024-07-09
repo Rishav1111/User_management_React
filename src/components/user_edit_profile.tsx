@@ -3,12 +3,22 @@ import Button from "./button";
 import Input from "./input";
 import Navbar from "./navbar";
 import { useState } from "react";
+import React from "react";
+
+interface EditProfileForm {
+  fullname: string;
+  email: string;
+  phoneNumber: string;
+  gender: string;
+  dob: string;
+  age: string;
+}
 
 export const Edit_Profile = () => {
   const [fullname, setFullname] = useState("Rishav Shrestha");
   const [email, setEmail] = useState("shrestharishav3@gmail.com");
   const [phoneNumber, setPhoneNumber] = useState("9808380424");
-  const [gender, setGender] = useState("rishav");
+  const [gender, setGender] = useState("Male");
   const [dob, setDob] = useState("2003-12-19");
   const [age, setAge] = useState("");
 
@@ -24,7 +34,7 @@ export const Edit_Profile = () => {
         </h2>
         <img
           className="w-32 h-32 rounded-full"
-          src="/photo.jpg"
+          src="/profile.jpg"
           alt="User image"
         />
         <h5 className="mt-2 cursor-pointer hover:text-blue-600">Edit Photo</h5>
@@ -32,16 +42,14 @@ export const Edit_Profile = () => {
         <div className="text-base bg-zinc-300 mt-5 p-5 w-4/5 grid gap-2 grid-cols-2 rounded-lg flex-wrap mb-4">
           <Label htmlFor="fullname" text="Full Name:" />
           <Input
-            className="bg-white"
             type="text"
             id="fullname"
             name="fullname"
             value={fullname}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setFullname(e.target.value)}
           />
           <Label htmlFor="email" text="Email:" />
           <Input
-            className="bg-white"
             type="text"
             id="email"
             name="email"
@@ -50,16 +58,16 @@ export const Edit_Profile = () => {
           />
           <Label htmlFor="phonenumber" text="Phone Number:" />
           <Input
-            className="bg-white"
             type="text"
             id="phonenumber"
             name="phonenumber"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={(e: {
+              target: { value: React.SetStateAction<string> };
+            }) => setPhoneNumber(e.target.value)}
           />
           <Label htmlFor="gender" text="Gender:" />
           <Input
-            className="bg-white"
             type="text"
             id="gender"
             name="gender"
@@ -68,7 +76,6 @@ export const Edit_Profile = () => {
           />
           <Label htmlFor="date" text="DOB:" />
           <Input
-            className="bg-white"
             type="date"
             id="date"
             name="date"
@@ -77,16 +84,19 @@ export const Edit_Profile = () => {
           />
           <Label htmlFor="number" text="Age:" />
           <Input
-            className="bg-white"
             type="number"
             id="number"
             name="number"
-            placeholder="Enter your age"
             value={age}
             onChange={(e) => setAge(e.target.value)}
           />
         </div>
-        <Button type="button" text="Save" onClick={handleSave} />
+        <Button
+          type="button"
+          text="Save"
+          color="bg-gray-600 hover:bg-gray-700"
+          onClick={handleSave}
+        />
       </div>
     </>
   );

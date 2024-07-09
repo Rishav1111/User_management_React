@@ -3,6 +3,7 @@ import { LoginForm } from "./components/login_page";
 import { Signup } from "./components/signup_page";
 import { Edit_Profile } from "./components/user_edit_profile";
 import { UserList } from "./components/user_lists";
+import React from "react";
 
 function App() {
   return (
