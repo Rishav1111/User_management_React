@@ -101,7 +101,7 @@ export const LoginForm = () => {
               color="bg-gray-600 hover:bg-gray-700"
               type="submit"
               text="Login"
-              onClick={undefined}
+              onClick={() => {}}
             />
             <div className="flex justify-center items-center text-xs  text-gray-700 space-x-2">
               <div className="border-t border-gray-400 w-1/4"></div>

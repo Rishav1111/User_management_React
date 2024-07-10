@@ -95,13 +95,13 @@ export const UserList = () => {
                         color="bg-blue-600 hover:bg-blue-900"
                         type="submit"
                         text="Edit"
-                        onClick={undefined}
+                        onClick={() => {}}
                       />
                       <Button
                         color="bg-red-600 hover:bg-red-900"
                         type="submit"
                         text="Delete"
-                        onClick={undefined}
+                        onClick={() => {}}
                       />
                     </TableData>
                   </tr>

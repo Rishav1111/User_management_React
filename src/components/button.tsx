@@ -1,9 +1,16 @@
 import React from "react";
 
-const Button = ({ type, text, onClick, color }) => {
+interface ButtonProps {
+  type: "button" | "submit" | "reset";
+  text: string;
+  onClick?: () => void;
+  color: string;
+}
+
+const Button: React.FC<ButtonProps> = ({ type, text, onClick, color }) => {
   return (
     <button
-      className={` ${color} flex justify-center items-center mt-4  w-28 h-8 self-center p-2 text-white font-semibold rounded-3xl text-sm mb-3 border-none`}
+      className={` ${color} flex justify-center items-center mt-4 w-28 h-8 self-center p-2 text-white font-semibold rounded-3xl text-sm mb-3 border-none`}
       type={type}
       onClick={onClick}
     >

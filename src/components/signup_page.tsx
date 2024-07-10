@@ -91,7 +91,11 @@ export const Signup = () => {
         <img className="w-full h-full rounded" src="/login.jpg" alt="" />
       </div>
       <div className="text-gray-800 flex-1 items-center bg-transparent p-3">
-        <form id="signup" className="flex flex-wrap flex-col m-3 mt-5 p-5">
+        <form
+          id="signup"
+          className="flex flex-wrap flex-col m-3 mt-5 p-5"
+          onSubmit={handleSubmit}
+        >
           <h2 className="mb-5 text-center font-bold text-xl">Sign Up</h2>
           <Label htmlFor="fullname" text="Full Name:" />
           <Input
@@ -162,7 +166,7 @@ export const Signup = () => {
             type="submit"
             text="Sign Up"
             color="bg-gray-600 hover:bg-gray-700"
-            onClick={handleSubmit}
+            onClick={() => {}}
           />
           <div className="flex justify-center items-center text-xs  text-gray-700 space-x-2">
             <div className="border-t border-gray-400 w-1/4"></div>
