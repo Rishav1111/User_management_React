@@ -17,9 +17,33 @@ describe("Signup", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders the full name input field", () => {
+    renderWithRouter(<Signup />);
+    expect(screen.getByLabelText(/Full Name/i)).toBeInTheDocument();
+  });
+
+  it("renders the email input field", () => {
+    renderWithRouter(<Signup />);
+    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
+  });
+  it("renders the phone Number input field", () => {
+    renderWithRouter(<Signup />);
+    expect(screen.getByLabelText(/Phone Number/i)).toBeInTheDocument();
+  });
+  it("renders the Password input field", () => {
+    renderWithRouter(<Signup />);
+    const passwordInput = screen.getByLabelText(/Password:/i, {
+      selector: 'input[name="password"]',
+    });
+    expect(passwordInput).toBeInTheDocument();
+  });
+  it("renders the Confirm password input field", () => {
+    renderWithRouter(<Signup />);
+    expect(screen.getByLabelText(/Confirm Password/i)).toBeInTheDocument();
+  });
+
   it("shows validation errors when form is incomplete", () => {
     renderWithRouter(<Signup />);
-
     const button = screen.getByRole("button", { name: /Sign Up/i });
 
     // Submit the form without filling it in
@@ -34,5 +58,61 @@ describe("Signup", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/please enter your email/i)).toBeInTheDocument();
     expect(screen.getByText(/please enter a password/i)).toBeInTheDocument();
+  });
+  it("show error message when password length is less than 8", () => {
+    renderWithRouter(<Signup />);
+
+    const PasswordInput = screen.getByLabelText(/Password:/i, {
+      selector: "input[name='password']",
+    });
+
+    fireEvent.change(PasswordInput, { target: { value: "short" } });
+    const button = screen.getByRole("button", { name: /Sign Up/i });
+
+    fireEvent.click(button);
+    expect(
+      screen.getByText(/Password must be at least 8 characters long/i)
+    ).toBeInTheDocument();
+  });
+
+  it("show error message when password and confirm password do not match", () => {
+    renderWithRouter(<Signup />);
+
+    const PasswordInput = screen.getByLabelText(/Password:/i, {
+      selector: "input[name='password']",
+    });
+    const ConfirmpasswordInput = screen.getByLabelText(/Confirm Password/i);
+
+    fireEvent.change(PasswordInput, { target: { value: "password123" } });
+    fireEvent.change(ConfirmpasswordInput, {
+      target: { value: "password1234" },
+    });
+    const button = screen.getByRole("button", { name: /Sign Up/i });
+    fireEvent.click(button);
+    expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
+  });
+
+  it("submit the form when all fields are filled correctly", () => {
+    renderWithRouter(<Signup />);
+
+    const FullnameInput = screen.getByLabelText(/Full Name/i);
+    const EmailInput = screen.getByLabelText(/Email/i);
+    const PhoneNumberInput = screen.getByLabelText(/Phone Number/i);
+    const PasswordInput = screen.getByLabelText(/Password:/i, {
+      selector: "input[name='password']",
+    });
+    const ConfirmpasswordInput = screen.getByLabelText(/Confirm Password/i);
+
+    fireEvent.change(FullnameInput, { target: { value: "Rishav Shrestha" } });
+    fireEvent.change(EmailInput, {
+      target: { value: "shrestharishav@gmail.com" },
+    });
+    fireEvent.change(PhoneNumberInput, { target: { value: "98000000000" } });
+    fireEvent.change(PasswordInput, { target: { value: "Rishav123" } });
+    fireEvent.change(ConfirmpasswordInput, { target: { value: "Rishav123" } });
+    const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
+    const button = screen.getByRole("button", { name: /Sign Up/i });
+    fireEvent.click(button);
+    expect(alertMock).toHaveBeenCalledWith("Signup successful");
   });
 });

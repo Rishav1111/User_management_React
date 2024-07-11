@@ -20,7 +20,7 @@ export const Edit_Profile = () => {
   const [phoneNumber, setPhoneNumber] = useState("9808380424");
   const [gender, setGender] = useState("Male");
   const [dob, setDob] = useState("2003-12-19");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState("21");
 
   const handleSave = () => {
     alert("User updated Successfully.");

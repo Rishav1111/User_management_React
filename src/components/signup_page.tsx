@@ -73,7 +73,7 @@ export const Signup = () => {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (validateForm()) {
-      navigate("/");
+      alert("Signup successful");
     }
   };
   const handleLoginClick = (event: {

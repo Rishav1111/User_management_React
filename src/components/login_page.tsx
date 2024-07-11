@@ -43,7 +43,7 @@ export const LoginForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (validateForm()) {
-      navigate("/edit_profile");
+      alert("Login successful");
     }
   };
 
