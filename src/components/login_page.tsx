@@ -57,7 +57,7 @@ export const LoginForm = () => {
         }
 
         const data = await response.json();
-        Cookies.set("token", data.token, { expires: 7 });
+        Cookies.set("token", data.token);
 
         const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
         const roles = decodedToken.role;
