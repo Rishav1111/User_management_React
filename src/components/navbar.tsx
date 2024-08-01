@@ -48,13 +48,7 @@ const Navbar = () => {
               href="/"
               className="text-sm lg:text-lg font-bold text-white hover:text-gray-400"
             >
-              Login
-            </a>
-            <a
-              href="/sigup"
-              className="text-sm lg:text-lg font-bold text-white hover:text-gray-400"
-            >
-              Signup
+              Logout
             </a>
           </div>
         </div>

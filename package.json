@@ -9,11 +9,15 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "-": "^0.0.1",
+    "axios": "^1.7.2",
+    "js-cookie": "^3.0.5",
     "jsdom": "^24.0.0",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
@@ -25,6 +29,8 @@
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/coverage-istanbul": "^2.0.2",
     "@vitest/ui": "^2.0.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
@@ -34,6 +40,6 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
     "vite": "^5.2.0",
-    "vitest": "^2.0.1"
+    "vitest": "^2.0.2"
   }
 }
