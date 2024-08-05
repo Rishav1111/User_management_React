@@ -1,56 +1,108 @@
 import { TableData } from "./tabledata";
 import { TableHeader } from "./tableheader";
+import Cookies from "js-cookie";
 import Button from "./button";
 import Navbar from "./navbar";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+interface User {
+  id: number;
+  fullname: string;
+  email: string;
+  phoneNumber: string;
+  age: number;
+  role: { name: string }[];
+}
+
+// const getCookie = (name: string) => {
+//   const value = `; ${document.cookie}`;
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) return parts.pop()?.split(";").shift();
+// };
+
 export const UserList = () => {
-  const users = [
-    {
-      id: 1,
-      fullName: "Rishav Shrestha",
-      email: "shrestharishav3@gmail.com",
-      phoneNumber: "9888888888",
-      gender: "Male",
-      age: 21,
-      image: "./profile.jpg",
-    },
-    {
-      id: 2,
-      fullName: "John Doe",
-      email: "john.doe@example.com",
-      phoneNumber: "1234567890",
-      gender: "Male",
-      age: 30,
-      image: "./profile.jpg",
-    },
-    {
-      id: 3,
-      fullName: "Jane Doe",
-      email: "jane.doe@example.com",
-      phoneNumber: "0987654321",
-      gender: "Female",
-      age: 25,
-      image: "./profile.jpg",
-    },
-    {
-      id: 4,
-      fullName: "Jane Doe",
-      email: "jane.doe@example.com",
-      phoneNumber: "0987654321",
-      gender: "Female",
-      age: 25,
-      image: "./profile.jpg",
-    },
-    {
-      id: 5,
-      fullName: "Jane Doe",
-      email: "jane.doe@example.com",
-      phoneNumber: "0987654321",
-      gender: "Female",
-      age: 25,
-      image: "./profile.jpg",
-    },
-  ];
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+
+    if (!token) {
+      setError("Token not found");
+      setLoading(false);
+      return;
+    }
+    fetch("http://localhost:3000/api/getUsers", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw new Error(
+              `Error: ${response.status} ${response.statusText}\n${text}`
+            );
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          const filterUser = data.filter(
+            (user: User) => !user.role.some((r) => r.name === "admin")
+          );
+          setUsers(filterUser);
+        } else {
+          throw new Error("Response is not an array");
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleDelete = (id: number) => {
+    const token = Cookies.get("token");
+    fetch(`http://localhost:3000/api/deleteUser/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw new Error(
+              `Error: ${response.status} ${response.statusText}\n${text}`
+            );
+          });
+        }
+        // Remove the user from the local state
+        setUsers(users.filter((user) => user.id !== id));
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+        setError(error.message);
+      });
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <>
       <Navbar />
@@ -66,47 +118,37 @@ export const UserList = () => {
                 <TableHeader>Full Name</TableHeader>
                 <TableHeader>Email</TableHeader>
                 <TableHeader>Phone Number</TableHeader>
-                <TableHeader>Gender</TableHeader>
+
                 <TableHeader>Age</TableHeader>
-                <TableHeader>Image</TableHeader>
+
                 <TableHeader>Action</TableHeader>
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => {
-                console.log(user);
-                return (
-                  <tr key={user.id}>
-                    <TableData>{user.id}</TableData>
-                    <TableData>{user.fullName}</TableData>
-                    <TableData>{user.email}</TableData>
-                    <TableData>{user.phoneNumber}</TableData>
-                    <TableData>{user.gender}</TableData>
-                    <TableData>{user.age}</TableData>
-                    <TableData>
-                      <img
-                        className="w-16 h-16 rounded-full object-cover"
-                        src={user.image}
-                        alt={user.fullName}
-                      />
-                    </TableData>
-                    <TableData>
-                      <Button
-                        color="bg-blue-600 hover:bg-blue-900"
-                        type="submit"
-                        text="Edit"
-                        onClick={() => {}}
-                      />
-                      <Button
-                        color="bg-red-600 hover:bg-red-900"
-                        type="submit"
-                        text="Delete"
-                        onClick={() => {}}
-                      />
-                    </TableData>
-                  </tr>
-                );
-              })}
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <TableData>{user.id}</TableData>
+                  <TableData>{user.fullname}</TableData>
+                  <TableData>{user.email}</TableData>
+                  <TableData>{user.phoneNumber}</TableData>
+                  <TableData>{user.age}</TableData>
+
+                  <TableData>
+                    <Button
+                      color="bg-blue-600 hover:bg-blue-900"
+                      type="submit"
+                      text="Edit"
+                      onClick={() => {}}
+                    />
+                    <Button
+                      color="bg-red-600 hover:bg-red-900"
+                      type="submit"
+                      text="Delete"
+                      onClick={() => handleDelete(user.id)}
+                    />
+                  </TableData>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
