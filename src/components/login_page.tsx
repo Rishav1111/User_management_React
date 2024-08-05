@@ -1,26 +1,20 @@
-import React, { useState } from "react";
-import { FaFacebook } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
+import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Label from "./label";
 import Button from "./button";
 import Input from "./input";
-
-interface LoginForm {
-  email: string;
-  password: string;
-  emailValidation: string;
-  passwordValidation: string;
-}
+import { FcGoogle } from "react-icons/fc";
+import Cookies from "js-cookie";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailValidation, setEmailValidation] = useState("");
   const [passwordValidation, setPasswordValidation] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const navigate = useNavigate();
+
   const validateForm = () => {
     let isValid = true;
     setEmailValidation("");
@@ -40,10 +34,43 @@ export const LoginForm = () => {
     return isValid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (validateForm()) {
-      alert("Login successful");
+      try {
+        const response = await fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          setLoginError(
+            errorData.message ||
+              "Login failed. Please check your credentials and try again."
+          );
+          return;
+        }
+
+        const data = await response.json();
+        Cookies.set("token", data.token);
+
+        const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
+        const roles = decodedToken.role;
+
+        if (roles && roles.includes("admin")) {
+          navigate("/users");
+        } else {
+          navigate("/edit_profile");
+        }
+      } catch (error) {
+        console.error("An unexpected error occurred:", error);
+        setLoginError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -82,6 +109,10 @@ export const LoginForm = () => {
             />
             {passwordValidation && (
               <p className="text-red-500 text-sm mb-4">{passwordValidation}</p>
+            )}
+
+            {loginError && (
+              <p className="text-red-500 text-sm mb-4">{loginError}</p>
             )}
 
             <div className="flex space-x-24">

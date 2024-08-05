@@ -24,9 +24,11 @@ export const Signup = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [age, setAge] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullnameValidation, setFullnameValidation] = useState("");
   const [emailValidation, setEmailValidation] = useState("");
+  const [ageValidation, setAgeValidation] = useState("");
   const [phoneNumberValidation, setPhoneNumberValidation] = useState("");
   const [passwordValidation, setPasswordValidation] = useState("");
   const [confirmPasswordValidation, setConfirmPasswordValidation] =
@@ -43,6 +45,7 @@ export const Signup = () => {
     setPhoneNumberValidation("");
     setPasswordValidation("");
     setConfirmPasswordValidation("");
+    setAgeValidation("");
 
     if (!fullname) {
       setFullnameValidation("Please enter your full name");
@@ -54,6 +57,10 @@ export const Signup = () => {
     }
     if (!phoneNumber) {
       setPhoneNumberValidation("Please enter your phone number");
+      isValid = false;
+    }
+    if (!age) {
+      setAgeValidation("Please enter your age");
       isValid = false;
     }
     if (!password) {
@@ -70,12 +77,39 @@ export const Signup = () => {
 
     return isValid;
   };
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
-      alert("Signup successful");
+      try {
+        const response = await fetch("http://localhost:3000/api/createUser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullname,
+            email,
+            phoneNumber,
+            password,
+            age,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          alert(`Signup failed: ${errorData.message}`);
+          return;
+        }
+
+        alert("Signup successfully");
+        navigate("/");
+      } catch (error) {
+        console.error("An unexpected error occurred:", error);
+        alert("An unexpected error occurred. Please try again.");
+      }
     }
   };
+
   const handleLoginClick = (event: {
     preventDefault: () => void;
     stopPropagation: () => void;
@@ -135,6 +169,19 @@ export const Signup = () => {
           />
           {phoneNumberValidation && (
             <p className="text-red-500 text-sm">{phoneNumberValidation}</p>
+          )}
+          <Label htmlFor="age" text="Age:" />
+          <Input
+            type="number"
+            name="age"
+            id="age"
+            value={age}
+            onChange={(e: {
+              target: { value: React.SetStateAction<string> };
+            }) => setAge(e.target.value)}
+          />
+          {ageValidation && (
+            <p className="text-red-500 text-sm">{ageValidation}</p>
           )}
           <Label htmlFor="password" text="Password:" />
           <Input

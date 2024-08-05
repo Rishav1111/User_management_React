@@ -1,6 +1,18 @@
 import React from "react";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    Cookies.remove("token");
+    navigate("/"); // Redirect to the login page
+  };
+
   return (
     <header className="bg-gray-800 w-full p-4">
       <nav className="container mx-auto flex flex-wrap items-center justify-between">
@@ -47,14 +59,9 @@ const Navbar = () => {
             <a
               href="/"
               className="text-sm lg:text-lg font-bold text-white hover:text-gray-400"
+              onClick={handleLogout}
             >
-              Login
-            </a>
-            <a
-              href="/sigup"
-              className="text-sm lg:text-lg font-bold text-white hover:text-gray-400"
-            >
-              Signup
+              Logout
             </a>
           </div>
         </div>
