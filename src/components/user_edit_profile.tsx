@@ -30,17 +30,16 @@ export const Edit_Profile = () => {
   const [age, setAge] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  const token = Cookies.get("token");
+  if (!token) {
+    setError("Token not found");
+    return;
+  }
+
+  const decodedToken = jwtDecode<DecodedToken>(token);
+
+  const userId = decodedToken.id;
   useEffect(() => {
-    const token = Cookies.get("token");
-    if (!token) {
-      setError("Token not found");
-      return;
-    }
-
-    const decodedToken = jwtDecode<DecodedToken>(token);
-
-    const userId = decodedToken.id;
-
     fetch(`http://localhost:3000/api/getUser/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,13 +67,41 @@ export const Edit_Profile = () => {
       });
   }, []);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   const handleSave = () => {
-    alert("User updated Successfully.");
+    const updatedUser = {
+      fullname,
+      email,
+      phoneNumber,
+      age,
+    };
+
+    fetch(`http://localhost:3000/api/updateUser/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify(updatedUser),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw new Error(
+              `Error: ${response.status} ${response.statusText}\n${text}`
+            );
+          });
+        }
+        alert("User updated Successfully.");
+      })
+      .catch((error) => {
+        console.error("Error updating user data:", error);
+        setError(error.message);
+      });
   };
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <>
       <Navbar />
