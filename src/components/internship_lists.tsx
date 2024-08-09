@@ -5,17 +5,17 @@ import Button from "./button";
 import Navbar from "./navbar";
 import React, { useEffect, useState } from "react";
 
-interface User {
+interface Internship {
   id: number;
-  fullname: string;
-  email: string;
-  phoneNumber: string;
-  age: number;
-  role: { name: string }[];
+  joinedDate: Date;
+  completionDate: Date;
+  isCertified: string;
+  mentorName: string;
+  user: { fullname: string };
 }
 
-export const UserList = () => {
-  const [users, setUsers] = useState<User[]>([]);
+export const InternList = () => {
+  const [internship, setInternship] = useState<Internship[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +27,7 @@ export const UserList = () => {
       setLoading(false);
       return;
     }
-    fetch("http://localhost:3000/api/getUsers", {
+    fetch("http://localhost:3000/api/getInternships", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -45,49 +45,46 @@ export const UserList = () => {
       })
       .then((data) => {
         if (Array.isArray(data)) {
-          const filterUser = data.filter(
-            (user: User) => !user.role.some((r) => r.name === "admin")
-          );
-          setUsers(filterUser);
+          setInternship(data);
         } else {
           throw new Error("Response is not an array");
         }
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching internship data:", error);
         setError(error.message);
         setLoading(false);
       });
   }, []);
 
-  const handleDelete = (id: number) => {
-    const token = Cookies.get("token");
-    fetch(`http://localhost:3000/api/deleteUser/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
+  //   const handleDelete = (id: number) => {
+  //     const token = Cookies.get("token");
+  //     fetch(`http://localhost:3000/api/deleteUser/${id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
 
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((text) => {
-            throw new Error(
-              `Error: ${response.status} ${response.statusText}\n${text}`
-            );
-          });
-        }
-        // Remove the user from the local state
-        setUsers(users.filter((user) => user.id !== id));
-      })
-      .catch((error) => {
-        console.error("Error deleting user:", error);
-        setError(error.message);
-      });
-  };
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include",
+  //     })
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           return response.text().then((text) => {
+  //             throw new Error(
+  //               `Error: ${response.status} ${response.statusText}\n${text}`
+  //             );
+  //           });
+  //         }
+  //         // Remove the user from the local state
+  //         setUsers(users.filter((user) => user.id !== id));
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error deleting user:", error);
+  //         setError(error.message);
+  //       });
+  //   };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -109,23 +106,23 @@ export const UserList = () => {
             <thead>
               <tr>
                 <TableHeader>ID</TableHeader>
-                <TableHeader>Full Name</TableHeader>
-                <TableHeader>Email</TableHeader>
-                <TableHeader>Phone Number</TableHeader>
-
-                <TableHeader>Age</TableHeader>
-
+                <TableHeader>Joined Date</TableHeader>
+                <TableHeader>Completion Date</TableHeader>
+                <TableHeader>Certified</TableHeader>
+                <TableHeader>Mentor Name</TableHeader>
+                <TableHeader>Student</TableHeader>
                 <TableHeader>Action</TableHeader>
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
-                <tr key={user.id}>
-                  <TableData>{user.id}</TableData>
-                  <TableData>{user.fullname}</TableData>
-                  <TableData>{user.email}</TableData>
-                  <TableData>{user.phoneNumber}</TableData>
-                  <TableData>{user.age}</TableData>
+              {internship.map((intern) => (
+                <tr key={intern.id}>
+                  <TableData>{intern.id}</TableData>
+                  <TableData>{intern.joinedDate}</TableData>
+                  <TableData>{intern.completionDate}</TableData>
+                  <TableData>{intern.isCertified ? "Yes" : "No"}</TableData>
+                  <TableData>{intern.mentorName}</TableData>
+                  <TableData>{intern.user.fullname}</TableData>
 
                   <TableData>
                     <Button
@@ -138,7 +135,7 @@ export const UserList = () => {
                       color="bg-red-600 hover:bg-red-900"
                       type="submit"
                       text="Delete"
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => {}}
                     />
                   </TableData>
                 </tr>

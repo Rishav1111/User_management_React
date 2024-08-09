@@ -63,9 +63,9 @@ export const LoginForm = () => {
         const roles = decodedToken.role;
 
         if (roles && roles.includes("admin")) {
-          navigate("/users");
+          navigate("/dashboard");
         } else {
-          navigate("/edit_profile");
+          navigate("/");
         }
       } catch (error) {
         console.error("An unexpected error occurred:", error);
