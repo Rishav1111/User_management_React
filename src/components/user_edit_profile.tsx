@@ -141,12 +141,20 @@ export const Edit_Profile = () => {
             onChange={(e) => setAge(e.target.value)}
           />
         </div>
-        <Button
-          type="button"
-          text="Save"
-          color="bg-gray-600 hover:bg-gray-700"
-          onClick={handleSave}
-        />
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            text="Save"
+            color="bg-gray-600 hover:bg-gray-700"
+            onClick={handleSave}
+          />
+          <Button
+            type="button"
+            text="Cancel"
+            color="bg-red-600 hover:bg-red-700"
+            onClick={() => {}}
+          />
+        </div>
       </div>
     </>
   );
