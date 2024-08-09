@@ -10,14 +10,14 @@ const Navbar = () => {
   ) => {
     event.preventDefault();
     Cookies.remove("token");
-    navigate("/"); // Redirect to the login page
+    navigate("/");
   };
 
   return (
     <header className="bg-gray-800 w-full p-4">
       <nav className="container mx-auto flex flex-wrap items-center justify-between">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
-          <span className="text-lg sm:text-2xl font-bold">MySite</span>
+          <span className="text-lg sm:text-2xl font-bold">IMS</span>
         </div>
 
         <div className="block lg:hidden">
@@ -51,6 +51,11 @@ const Navbar = () => {
             <li>
               <a href="/users" className="hover:text-gray-400">
                 User Lists
+              </a>
+            </li>
+            <li>
+              <a href="/edit_profile" className="hover:text-gray-400">
+                User Profile
               </a>
             </li>
           </ul>

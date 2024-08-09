@@ -2,8 +2,10 @@ import Label from "./label";
 import Button from "./button";
 import Input from "./input";
 import Navbar from "./navbar";
-import { useState } from "react";
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 import React from "react";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface EditProfileForm {
   fullname: string;
@@ -14,13 +16,61 @@ interface EditProfileForm {
   age: string;
 }
 
+interface DecodedToken extends JwtPayload {
+  id: number;
+  fullname: string;
+}
+
 export const Edit_Profile = () => {
-  const [fullname, setFullname] = useState("Rishav Shrestha");
-  const [email, setEmail] = useState("shrestharishav3@gmail.com");
-  const [phoneNumber, setPhoneNumber] = useState("9808380424");
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [gender, setGender] = useState("Male");
   const [dob, setDob] = useState("2003-12-19");
-  const [age, setAge] = useState("21");
+  const [age, setAge] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      setError("Token not found");
+      return;
+    }
+
+    const decodedToken = jwtDecode<DecodedToken>(token);
+
+    const userId = decodedToken.id;
+
+    fetch(`http://localhost:3000/api/getUser/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(
+            `Error: ${response.status} ${response.statusText}\n${text}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setFullname(data.fullname);
+        setEmail(data.email);
+        setPhoneNumber(data.phoneNumber);
+        setAge(data.age);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setError(error.message);
+      });
+  }, []);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   const handleSave = () => {
     alert("User updated Successfully.");
@@ -91,12 +141,20 @@ export const Edit_Profile = () => {
             onChange={(e) => setAge(e.target.value)}
           />
         </div>
-        <Button
-          type="button"
-          text="Save"
-          color="bg-gray-600 hover:bg-gray-700"
-          onClick={handleSave}
-        />
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            text="Save"
+            color="bg-gray-600 hover:bg-gray-700"
+            onClick={handleSave}
+          />
+          <Button
+            type="button"
+            text="Cancel"
+            color="bg-red-600 hover:bg-red-700"
+            onClick={() => {}}
+          />
+        </div>
       </div>
     </>
   );
