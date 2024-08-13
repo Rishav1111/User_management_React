@@ -6,19 +6,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
-interface SignupForm {
-  fullname: string;
-  email: string;
-  phoneNumber: string;
-  password: string;
-  confirmPassword: string;
-  fullnameValidation: string;
-  emailValidation: string;
-  phoneNumberValidation: string;
-  passwordValidation: string;
-  confirmPasswordValidation: string;
-}
-
 export const Signup = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
@@ -102,7 +89,7 @@ export const Signup = () => {
         }
 
         alert("Signup successfully");
-        navigate("/");
+        navigate("/login");
       } catch (error) {
         console.error("An unexpected error occurred:", error);
         alert("An unexpected error occurred. Please try again.");
@@ -116,11 +103,11 @@ export const Signup = () => {
   }) => {
     event.preventDefault();
     event.stopPropagation();
-    navigate("/");
+    navigate("/login");
   };
 
   return (
-    <div className="flex flex-wrap content-center items-center w-full h-3/4 m-8 p-2 max-w-4xl rounded-xl bg-white shadow-lg">
+    <div className="flex flex-wrap content-center items-center w-full h-screen m-8 p-2 max-w-4xl rounded-xl bg-white shadow-lg">
       <div className="flex flex-1 justify-center items-center p-10">
         <img className="w-full h-full rounded" src="/login.jpg" alt="" />
       </div>
@@ -220,16 +207,16 @@ export const Signup = () => {
             <p className="text-xs">or signup with</p>
             <div className="border-t border-gray-400 w-1/4"></div>
           </div>
-          <div className="flex justify-center items-center space-x-2 mt-4 cursor-pointer">
+          <div className="flex justify-center items-center space-x-2 mt-1 cursor-pointer">
             {/* <FaFacebook /> */}
             <FcGoogle />
           </div>
 
           <div className="flex self-center text-sm">
-            <p className="mt-4">Already have an account?</p>
+            <p className="mt-2">Already have an account?</p>
             <a
-              href="/"
-              className="mt-4 hover:text-blue-900 font-bold"
+              href="/login"
+              className="mt-2 hover:text-blue-900 font-bold"
               onClick={handleLoginClick}
             >
               Login
