@@ -5,6 +5,7 @@ import Button from "./button";
 import Input from "./input";
 import { FcGoogle } from "react-icons/fc";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -50,10 +51,9 @@ export const LoginForm = () => {
         if (!response.ok) {
           const errorData = await response.json();
           setLoginError(
-            errorData.message ||
-              "Login failed. Please check your credentials and try again."
+            errorData.message || "Please check your credentials and try again."
           );
-          return;
+          return toast.error(loginError);
         }
 
         const data = await response.json();
@@ -63,11 +63,14 @@ export const LoginForm = () => {
         const roles = decodedToken.role;
 
         if (roles && roles.includes("admin")) {
+          toast.success("Login successful");
           navigate("/dashboard");
         } else {
+          toast.success("Login successful");
           navigate("/");
         }
       } catch (error) {
+        toast.error("An unexpected error occurred");
         console.error("An unexpected error occurred:", error);
         setLoginError("An unexpected error occurred. Please try again.");
       }
@@ -111,9 +114,9 @@ export const LoginForm = () => {
               <p className="text-red-500 text-sm mb-4">{passwordValidation}</p>
             )}
 
-            {loginError && (
+            {/* {loginError && (
               <p className="text-red-500 text-sm mb-4">{loginError}</p>
-            )}
+            )} */}
 
             <div className="flex space-x-24">
               <div className="flex justify-center items-center text-xs font-bold text-gray-700 space-x-2">

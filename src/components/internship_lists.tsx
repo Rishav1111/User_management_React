@@ -99,7 +99,7 @@ export const InternList = () => {
       <Navbar />
       <div className="bg-white p-5 h-full m-24 w-auto rounded shadow-lg overflow-y-auto">
         <h2 className="mb-5 text-center font-bold text-sm sm:text-2xl">
-          User Lists
+          Internship Lists
         </h2>
         <div className="overflow-y-scroll overflow-x-auto max-h-96">
           <table className="w-full mb-5 table-auto">
