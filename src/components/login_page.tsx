@@ -50,9 +50,7 @@ export const LoginForm = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          setLoginError(
-            errorData.message || "Please check your credentials and try again.",
-          );
+          setLoginError(errorData.message || "Please check your credentials.");
           return toast.error(loginError);
         }
 
