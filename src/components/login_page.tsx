@@ -7,9 +7,11 @@ import { FcGoogle } from "react-icons/fc";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
-export const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+      export const LoginForm = () => {
+
+
+      const [email, setEmail] = useState("");
+        const [password, setPassword] = useState("");
   const [emailValidation, setEmailValidation] = useState("");
   const [passwordValidation, setPasswordValidation] = useState("");
   const [loginError, setLoginError] = useState("");
