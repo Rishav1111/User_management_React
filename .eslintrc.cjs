@@ -1,12 +1,12 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
-  settings: {
-    "import/extensions": {
-      node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
-      },
-    },
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "project": ["tsconfig.app.json"]
+      }
+    }
   },
   extends: [
     "eslint:recommended",
@@ -33,6 +33,7 @@ module.exports = {
         "parser": "flow",
       }
     ],
+    'no:convert': 1,
 
     "import/order": [
       "error",

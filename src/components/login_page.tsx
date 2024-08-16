@@ -1,4 +1,3 @@
-import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Label from "./label";
 import Button from "./button";
@@ -6,12 +5,11 @@ import Input from "./input";
 import { FcGoogle } from "react-icons/fc";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import React, { useState } from "react";
 
-      export const LoginForm = () => {
-
-
-      const [email, setEmail] = useState("");
-        const [password, setPassword] = useState("");
+export const LoginForm = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [emailValidation, setEmailValidation] = useState("");
   const [passwordValidation, setPasswordValidation] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -37,7 +35,7 @@ import { toast } from "react-toastify";
     return isValid;
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
       try {
@@ -53,7 +51,7 @@ import { toast } from "react-toastify";
         if (!response.ok) {
           const errorData = await response.json();
           setLoginError(
-            errorData.message || "Please check your credentials and try again."
+            errorData.message || "Please check your credentials and try again.",
           );
           return toast.error(loginError);
         }
@@ -150,7 +148,7 @@ import { toast } from "react-toastify";
             </div>
 
             <div className="flex self-center text-sm">
-              <p className="mt-4">Don't have an account?</p>
+              <p className="mt-4">Don&apos;t have an account?</p>
               <a href="/signup" className="mt-4 hover:text-blue-900 font-bold">
                 Sign Up
               </a>
