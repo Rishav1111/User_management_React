@@ -1,8 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { User } from "./user_lists";
-import React from "react";
 import Cookies from "js-cookie";
-
 import Label from "./label";
 import Button from "./button";
 import Input from "./input";
@@ -10,7 +8,10 @@ import { toast } from "react-toastify";
 
 interface EditUserFormProps {
   user: User;
-  onUpdateUser: (updatedUser: User) => void;
+
+
+  onUpdateUser: (updatedUser: User) => void
+
   onClose: () => void;
 }
 
@@ -22,12 +23,12 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
   const [fullname, setFullname] = useState(user.fullname);
   const [email, setEmail] = useState(user.email);
   const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
-  const [age, setAge] = useState(user.age);
+  const [DOB, setAge] = useState(user.DOB);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const updatedUser = { ...user, fullname, email, phoneNumber, age };
+    const updatedUser = { ...user, fullname, email, phoneNumber, DOB };
     const token = Cookies.get("token");
 
     fetch(`http://localhost:3000/api/updateUser/${user.id}`, {
@@ -94,13 +95,13 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
           />
         </div>
         <div className="mb-4">
-          <Label htmlFor="age" text="Age" />
+          <Label htmlFor="DOB" text="DOB" />
           <Input
-            type="number"
-            value={age}
+            type="date"
+            value={DOB}
             onChange={(e) => setAge(parseInt(e.target.value))}
-            id={"age"}
-            name={"age"}
+            id={"DOB"}
+            name={"DOB"}
           />
         </div>
         <div className="flex space-x-2 justify-center">

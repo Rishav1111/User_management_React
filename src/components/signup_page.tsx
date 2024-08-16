@@ -2,20 +2,19 @@ import Label from "./label";
 import Button from "./button";
 import { FcGoogle } from "react-icons/fc";
 import Input from "./input";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import React from "react";
 
 export const Signup = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [age, setAge] = useState("");
+  const [DOB, setdob] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullnameValidation, setFullnameValidation] = useState("");
   const [emailValidation, setEmailValidation] = useState("");
-  const [ageValidation, setAgeValidation] = useState("");
+  const [dobValidation, setDobValidation] = useState("");
   const [phoneNumberValidation, setPhoneNumberValidation] = useState("");
   const [passwordValidation, setPasswordValidation] = useState("");
   const [confirmPasswordValidation, setConfirmPasswordValidation] =
@@ -32,7 +31,7 @@ export const Signup = () => {
     setPhoneNumberValidation("");
     setPasswordValidation("");
     setConfirmPasswordValidation("");
-    setAgeValidation("");
+    setDobValidation("");
 
     if (!fullname) {
       setFullnameValidation("Please enter your full name");
@@ -46,8 +45,8 @@ export const Signup = () => {
       setPhoneNumberValidation("Please enter your phone number");
       isValid = false;
     }
-    if (!age) {
-      setAgeValidation("Please enter your age");
+    if (!DOB) {
+      setDobValidation("Please select your date of birth");
       isValid = false;
     }
     if (!password) {
@@ -78,7 +77,7 @@ export const Signup = () => {
             email,
             phoneNumber,
             password,
-            age,
+            DOB,
           }),
         });
 
@@ -157,18 +156,18 @@ export const Signup = () => {
           {phoneNumberValidation && (
             <p className="text-red-500 text-sm">{phoneNumberValidation}</p>
           )}
-          <Label htmlFor="age" text="Age:" />
+          <Label htmlFor="dob" text="DOB:" />
           <Input
-            type="number"
-            name="age"
-            id="age"
-            value={age}
+            type="date"
+            name="dob"
+            id="dob"
+            value={DOB}
             onChange={(e: {
               target: { value: React.SetStateAction<string> };
-            }) => setAge(e.target.value)}
+            }) => setdob(e.target.value)}
           />
-          {ageValidation && (
-            <p className="text-red-500 text-sm">{ageValidation}</p>
+          {dobValidation && (
+            <p className="text-red-500 text-sm">{dobValidation}</p>
           )}
           <Label htmlFor="password" text="Password:" />
           <Input

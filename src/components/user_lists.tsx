@@ -14,7 +14,7 @@ export interface User {
   fullname: string;
   email: string;
   phoneNumber: string;
-  age: number;
+  DOB: number;
   role: { name: string }[];
 }
 
@@ -178,7 +178,10 @@ export const UserList = () => {
                   <TableData>{user.fullname}</TableData>
                   <TableData>{user.email}</TableData>
                   <TableData>{user.phoneNumber}</TableData>
-                  <TableData>{user.age}</TableData>
+                  <TableData>
+                    {" "}
+                    {new Date(user.DOB).toISOString().split("T")[0]}
+                  </TableData>
 
                   <TableData>
                     <Button

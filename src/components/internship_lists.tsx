@@ -58,34 +58,6 @@ export const InternList = () => {
       });
   }, []);
 
-  //   const handleDelete = (id: number) => {
-  //     const token = Cookies.get("token");
-  //     fetch(`http://localhost:3000/api/deleteUser/${id}`, {
-  //       method: "DELETE",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //     })
-  //       .then((response) => {
-  //         if (!response.ok) {
-  //           return response.text().then((text) => {
-  //             throw new Error(
-  //               `Error: ${response.status} ${response.statusText}\n${text}`
-  //             );
-  //           });
-  //         }
-  //         // Remove the user from the local state
-  //         setUsers(users.filter((user) => user.id !== id));
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error deleting user:", error);
-  //         setError(error.message);
-  //       });
-  //   };
-
   if (loading) {
     return <div>Loading...</div>;
   }

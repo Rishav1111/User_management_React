@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Button from "./button";
 
@@ -58,7 +57,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-gray-800 w-full p-4">
+    <header className="bg-gray-800 w-full p-2">
       <nav className="container mx-auto flex flex-wrap items-center justify-between">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <span className="text-lg sm:text-2xl font-bold">UBA-IMS</span>
@@ -161,20 +160,16 @@ const Navbar = () => {
                   </>
                 )}
                 {role.includes("user") && (
-                  <>
-                    <li>
-                      <NavLink
-                        to="/"
-                        className={({ isActive }) =>
-                          isActive
-                            ? "bg-gray-500 p-2 rounded-md"
-                            : " text-white"
-                        }
-                      >
-                        Home
-                      </NavLink>
-                    </li>
-                  </>
+                  <li>
+                    <NavLink
+                      to="/"
+                      className={({ isActive }) =>
+                        isActive ? "bg-gray-500 p-2 rounded-md" : " text-white"
+                      }
+                    >
+                      Home
+                    </NavLink>
+                  </li>
                 )}
                 {/* Settings Dropdown */}
                 <li className="relative">
@@ -212,7 +207,7 @@ const Navbar = () => {
                       </li>
                       <li>
                         <a
-                          href="/change_password"
+                          href="/user/change_password"
                           className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
                         >
                           Change Password
@@ -292,13 +287,11 @@ const Navbar = () => {
                   </>
                 )}
                 {role.includes("user") && (
-                  <>
-                    <li>
-                      <a href="/" className="hover:text-gray-400">
-                        Home
-                      </a>
-                    </li>
-                  </>
+                  <li>
+                    <a href="/" className="hover:text-gray-400">
+                      Home
+                    </a>
+                  </li>
                 )}
                 {/* Settings Dropdown */}
                 <li>

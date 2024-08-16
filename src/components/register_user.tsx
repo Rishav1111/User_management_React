@@ -53,7 +53,7 @@ export const RegisterUser = () => {
           }
         );
 
-        const data = await response.json();
+        await response.json();
 
         if (response.ok) {
           alert("User registered successfully");

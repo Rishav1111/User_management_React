@@ -62,7 +62,7 @@ export const LoginForm = () => {
         const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
         const roles = decodedToken.role;
 
-        if (roles && roles.includes("admin")) {
+        if (roles?.includes("admin")) {
           toast.success("Login successful");
           navigate("/dashboard");
         } else {
