@@ -32,7 +32,7 @@ export const CreateUserForm = () => {
       isValid = false;
     }
     if (!phoneNumber) {
-      setPhoneNumberValidation("Please enter your phone number");
+      setPhoneNumberValidation("Please enter your phone number.");
       isValid = false;
     }
     if (!age) {
@@ -65,7 +65,7 @@ export const CreateUserForm = () => {
               age,
               role: [{ name: role }],
             }),
-          }
+          },
         );
 
         const data = await response.json();
