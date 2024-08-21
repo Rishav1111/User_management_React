@@ -23,7 +23,7 @@ export const UserList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [seletedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,42 +36,44 @@ export const UserList = () => {
       setLoading(false);
       return;
     }
-    fetch("http://localhost:3000/api/getUsers", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    })
-      .then((response) => {
+    const fetchUsers = async () => {
+      try {
+        const endpoint = searchQuery
+          ? `http://localhost:3000/api/search/users?q=${encodeURIComponent(searchQuery)}`
+          : "http://localhost:3000/api/getUsers";
+
+        const response = await fetch(endpoint, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+
         if (!response.ok) {
-          return response.text().then((text) => {
-            throw new Error(
-              `Error: ${response.status} ${response.statusText}\n${text}`
-            );
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          const filteredUsers = data.filter(
-            (user: User) =>
-              user.fullname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              user.phoneNumber.includes(searchQuery)
+          const errorMessage = await response.text();
+          throw new Error(
+            `Error: ${response.status} ${response.statusText}\n${errorMessage}`,
           );
-          setUsers(filteredUsers);
+        }
+
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setUsers(
+            searchQuery ? data.map((result: any) => result._source) : data,
+          );
         } else {
           throw new Error("Response is not an array");
         }
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching user data:", error);
         setError(error.message);
+      } finally {
         setLoading(false);
-      });
-  }, [searchQuery, users]);
+      }
+    };
+
+    fetchUsers();
+  }, [searchQuery]);
 
   const handleDelete = (id: number) => {
     setUserToDelete(id);
@@ -94,7 +96,7 @@ export const UserList = () => {
           if (!response.ok) {
             return response.text().then((text) => {
               throw new Error(
-                `Error: ${response.status} ${response.statusText}\n${text}`
+                `Error: ${response.status} ${response.statusText}\n${text}`,
               );
             });
           }
@@ -126,7 +128,9 @@ export const UserList = () => {
   const handleUpdate = (updatedUser: User) => {
     console.log(updatedUser);
     setUsers((prevUsers) =>
-      prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+      prevUsers.map((user) =>
+        user.id === updatedUser.id ? updatedUser : user,
+      ),
     );
     handleCloseModal();
   };
@@ -142,7 +146,7 @@ export const UserList = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-white p-5 h-auto m-10 w-auto rounded shadow-lg overflow-y-auto min-h-[300px] max-h-[600px]">
+      <div className="bg-white p-5 m-20 w-2/3  rounded shadow-lg">
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-center font-bold text-sm sm:text-2xl">
             User Lists
@@ -157,57 +161,65 @@ export const UserList = () => {
           />
         </div>
 
-        <div className="overflow-y-scroll overflow-x-auto max-h-96">
+        <div className=" overflow-x-auto h-96">
           <table className="w-full mb-5 table-auto">
-            <thead>
+            <thead className="sticky top-0 ">
               <tr>
                 <TableHeader>ID</TableHeader>
                 <TableHeader>Full Name</TableHeader>
                 <TableHeader>Email</TableHeader>
                 <TableHeader>Phone Number</TableHeader>
 
-                <TableHeader>Age</TableHeader>
+                <TableHeader>DOB</TableHeader>
 
                 <TableHeader>Action</TableHeader>
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
-                <tr key={user.id}>
-                  <TableData>{user.id}</TableData>
-                  <TableData>{user.fullname}</TableData>
-                  <TableData>{user.email}</TableData>
-                  <TableData>{user.phoneNumber}</TableData>
-                  <TableData>
-                    {" "}
-                    {new Date(user.DOB).toISOString().split("T")[0]}
-                  </TableData>
-
-                  <TableData>
-                    <Button
-                      color="bg-blue-600 hover:bg-blue-900"
-                      type="submit"
-                      text="Edit"
-                      onClick={() => handleEdit(user)}
-                    />
-                    <Button
-                      color="bg-red-600 hover:bg-red-900"
-                      type="submit"
-                      text="Delete"
-                      onClick={() => handleDelete(user.id)}
-                    />
-                  </TableData>
+              {Array.isArray(users) && users.length > 0 ? (
+                users.map((user) => (
+                  <tr key={user.id}>
+                    <TableData>{user.id}</TableData>
+                    <TableData>{user.fullname}</TableData>
+                    <TableData>{user.email}</TableData>
+                    <TableData>{user.phoneNumber}</TableData>
+                    <TableData>
+                      {user.DOB
+                        ? new Date(user.DOB).toISOString().slice(0, 10)
+                        : "Invalid Date"}
+                    </TableData>
+                    <TableData>
+                      <Button
+                        color="bg-blue-600 hover:bg-blue-900"
+                        type="submit"
+                        text="Edit"
+                        onClick={() => handleEdit(user)}
+                      />
+                      <Button
+                        color="bg-red-600 hover:bg-red-900"
+                        type="submit"
+                        text="Delete"
+                        onClick={() => handleDelete(user.id)}
+                      />
+                    </TableData>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center font-bold">
+                    No users found
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        {seletedUser && (
+        {selectedUser && (
           <EditUserForm
-            user={seletedUser}
+            user={selectedUser}
             onUpdateUser={handleUpdate}
             onClose={() => setIsModalOpen(false)}
           />

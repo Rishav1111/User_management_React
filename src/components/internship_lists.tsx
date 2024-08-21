@@ -37,7 +37,7 @@ export const InternList = () => {
         if (!response.ok) {
           return response.text().then((text) => {
             throw new Error(
-              `Error: ${response.status} ${response.statusText}\n${text}`
+              `Error: ${response.status} ${response.statusText}\n${text}`,
             );
           });
         }
@@ -69,13 +69,13 @@ export const InternList = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-white p-5 h-full m-24 w-auto rounded shadow-lg overflow-y-auto">
+      <div className="bg-white p-5  m-20 w-2/3 rounded shadow-lg">
         <h2 className="mb-5 text-center font-bold text-sm sm:text-2xl">
           Internship Lists
         </h2>
-        <div className="overflow-y-scroll overflow-x-auto max-h-96">
+        <div className=" overflow-x-auto h-96">
           <table className="w-full mb-5 table-auto">
-            <thead>
+            <thead className="sticky top-0 ">
               <tr>
                 <TableHeader>ID</TableHeader>
                 <TableHeader>Joined Date</TableHeader>
