@@ -4,13 +4,17 @@ import Cookies from "js-cookie";
 import Button from "./button";
 import Navbar from "./navbar";
 import React, { useEffect, useState } from "react";
+import { Modal } from "./edit_modal";
+import DeleteModal from "./delete_modal";
+import { EditUserForm } from "./edit_user_form";
+import { toast } from "react-toastify";
 
-interface User {
+export interface User {
   id: number;
   fullname: string;
   email: string;
   phoneNumber: string;
-  age: number;
+  DOB: number;
   role: { name: string }[];
 }
 
@@ -18,6 +22,11 @@ export const UserList = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [seletedUser, setSelectedUser] = useState<User | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -45,10 +54,13 @@ export const UserList = () => {
       })
       .then((data) => {
         if (Array.isArray(data)) {
-          const filterUser = data.filter(
-            (user: User) => !user.role.some((r) => r.name === "admin")
+          const filteredUsers = data.filter(
+            (user: User) =>
+              user.fullname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              user.phoneNumber.includes(searchQuery)
           );
-          setUsers(filterUser);
+          setUsers(filteredUsers);
         } else {
           throw new Error("Response is not an array");
         }
@@ -59,34 +71,64 @@ export const UserList = () => {
         setError(error.message);
         setLoading(false);
       });
-  }, []);
+  }, [searchQuery, users]);
 
   const handleDelete = (id: number) => {
-    const token = Cookies.get("token");
-    fetch(`http://localhost:3000/api/deleteUser/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
+    setUserToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
 
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((text) => {
-            throw new Error(
-              `Error: ${response.status} ${response.statusText}\n${text}`
-            );
-          });
-        }
-        // Remove the user from the local state
-        setUsers(users.filter((user) => user.id !== id));
+  const confirmDelete = () => {
+    if (userToDelete !== null) {
+      const token = Cookies.get("token");
+      fetch(`http://localhost:3000/api/deleteUser/${userToDelete}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       })
-      .catch((error) => {
-        console.error("Error deleting user:", error);
-        setError(error.message);
-      });
+        .then((response) => {
+          if (!response.ok) {
+            return response.text().then((text) => {
+              throw new Error(
+                `Error: ${response.status} ${response.statusText}\n${text}`
+              );
+            });
+          }
+
+          setUsers(users.filter((user) => user.id !== userToDelete));
+          toast.success("User deleted successfully");
+        })
+        .catch((error) => {
+          console.error("Error deleting user:", error);
+          setError(error.message);
+        })
+        .finally(() => {
+          setIsDeleteModalOpen(false);
+          setUserToDelete(null);
+        });
+    }
+  };
+
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleUpdate = (updatedUser: User) => {
+    console.log(updatedUser);
+    setUsers((prevUsers) =>
+      prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+    );
+    handleCloseModal();
   };
 
   if (loading) {
@@ -100,10 +142,21 @@ export const UserList = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-white p-5 h-full m-24 w-auto rounded shadow-lg overflow-y-auto">
-        <h2 className="mb-5 text-center font-bold text-sm sm:text-2xl">
-          User Lists
-        </h2>
+      <div className="bg-white p-5 h-auto m-10 w-auto rounded shadow-lg overflow-y-auto min-h-[300px] max-h-[600px]">
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-center font-bold text-sm sm:text-2xl">
+            User Lists
+          </h2>
+          {/* Search Input */}
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border border-gray-300 p-2 rounded-lg w-60"
+          />
+        </div>
+
         <div className="overflow-y-scroll overflow-x-auto max-h-96">
           <table className="w-full mb-5 table-auto">
             <thead>
@@ -125,14 +178,17 @@ export const UserList = () => {
                   <TableData>{user.fullname}</TableData>
                   <TableData>{user.email}</TableData>
                   <TableData>{user.phoneNumber}</TableData>
-                  <TableData>{user.age}</TableData>
+                  <TableData>
+                    {" "}
+                    {new Date(user.DOB).toISOString().split("T")[0]}
+                  </TableData>
 
                   <TableData>
                     <Button
                       color="bg-blue-600 hover:bg-blue-900"
                       type="submit"
                       text="Edit"
-                      onClick={() => {}}
+                      onClick={() => handleEdit(user)}
                     />
                     <Button
                       color="bg-red-600 hover:bg-red-900"
@@ -147,6 +203,21 @@ export const UserList = () => {
           </table>
         </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        {seletedUser && (
+          <EditUserForm
+            user={seletedUser}
+            onUpdateUser={handleUpdate}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
+      </Modal>
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+      />
     </>
   );
 };

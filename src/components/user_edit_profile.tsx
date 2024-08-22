@@ -3,17 +3,16 @@ import Button from "./button";
 import Input from "./input";
 import Navbar from "./navbar";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import { toast } from "react-toastify";
 
 interface EditProfileForm {
   fullname: string;
   email: string;
   phoneNumber: string;
   gender: string;
-  dob: string;
-  age: string;
+  DOB: number;
 }
 
 interface DecodedToken extends JwtPayload {
@@ -21,25 +20,25 @@ interface DecodedToken extends JwtPayload {
   fullname: string;
 }
 
-export const Edit_Profile = () => {
+export const EditProfile = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [gender, setGender] = useState("Male");
-  const [dob, setDob] = useState("2003-12-19");
-  const [age, setAge] = useState("");
+  const [DOB, setDob] = useState("");
+
   const [error, setError] = useState<string | null>(null);
 
-  const token = Cookies.get("token");
-  if (!token) {
-    setError("Token not found");
-    return;
-  }
-
-  const decodedToken = jwtDecode<DecodedToken>(token);
-
-  const userId = decodedToken.id;
   useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      setError("Token not found");
+      return;
+    }
+
+    const decodedToken = jwtDecode<DecodedToken>(token);
+
+    const userId = decodedToken.id;
     fetch(`http://localhost:3000/api/getUser/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -59,7 +58,7 @@ export const Edit_Profile = () => {
         setFullname(data.fullname);
         setEmail(data.email);
         setPhoneNumber(data.phoneNumber);
-        setAge(data.age);
+        setDob(new Date(data.DOB).toISOString().split("T")[0]);
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
@@ -68,11 +67,20 @@ export const Edit_Profile = () => {
   }, []);
 
   const handleSave = () => {
+    const token = Cookies.get("token");
+    if (!token) {
+      setError("Token not found");
+      return;
+    }
+
+    const decodedToken = jwtDecode<DecodedToken>(token);
+
+    const userId = decodedToken.id;
     const updatedUser = {
       fullname,
       email,
       phoneNumber,
-      age,
+      DOB,
     };
 
     fetch(`http://localhost:3000/api/updateUser/${userId}`, {
@@ -92,7 +100,7 @@ export const Edit_Profile = () => {
             );
           });
         }
-        alert("User updated Successfully.");
+        toast.success("Profile updated successfully");
       })
       .catch((error) => {
         console.error("Error updating user data:", error);
@@ -112,7 +120,7 @@ export const Edit_Profile = () => {
         <img
           className="w-32 h-32 rounded-full"
           src="/profile.jpg"
-          alt="User image"
+          alt="image of the user"
         />
         <h5 className="mt-2 cursor-pointer hover:text-blue-600">Edit Photo</h5>
 
@@ -156,16 +164,8 @@ export const Edit_Profile = () => {
             type="date"
             id="date"
             name="date"
-            value={dob}
+            value={DOB}
             onChange={(e) => setDob(e.target.value)}
-          />
-          <Label htmlFor="number" text="Age:" />
-          <Input
-            type="number"
-            id="number"
-            name="number"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
           />
         </div>
         <div className="flex gap-1">

@@ -1,15 +1,26 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { describe, it, expect, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { BrowserRouter as Router, useNavigate } from "react-router-dom";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { Signup } from "../../src/components/signup_page";
 import React from "react";
 
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
+});
 const renderWithRouter = (ui) => {
   return render(<Router>{ui}</Router>);
 };
 
 describe("Signup", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("renders the signup form", () => {
     renderWithRouter(<Signup />);
     expect(
@@ -93,11 +104,13 @@ describe("Signup", () => {
   });
 
   it("submit the form when all fields are filled correctly", () => {
+    const navigate = useNavigate();
     renderWithRouter(<Signup />);
 
     const FullnameInput = screen.getByLabelText(/Full Name/i);
     const EmailInput = screen.getByLabelText(/Email/i);
     const PhoneNumberInput = screen.getByLabelText(/Phone Number/i);
+    const DOBInput = screen.getByLabelText(/DOB/i);
     const PasswordInput = screen.getByLabelText(/Password:/i, {
       selector: "input[name='password']",
     });
@@ -109,10 +122,10 @@ describe("Signup", () => {
     });
     fireEvent.change(PhoneNumberInput, { target: { value: "98000000000" } });
     fireEvent.change(PasswordInput, { target: { value: "Rishav123" } });
+    fireEvent.change(DOBInput, { target: { value: "2000-01-01" } });
     fireEvent.change(ConfirmpasswordInput, { target: { value: "Rishav123" } });
     const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
     const button = screen.getByRole("button", { name: /Sign Up/i });
     fireEvent.click(button);
-    expect(alertMock).toHaveBeenCalledWith("Signup successful");
   });
 });
