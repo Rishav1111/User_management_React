@@ -28,7 +28,7 @@ export const UserList = () => {
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
+  const fetchUsers = async () => {
     const token = Cookies.get("token");
 
     if (!token) {
@@ -36,42 +36,42 @@ export const UserList = () => {
       setLoading(false);
       return;
     }
-    const fetchUsers = async () => {
-      try {
-        const endpoint = searchQuery
-          ? `http://localhost:3000/api/search/users?q=${encodeURIComponent(searchQuery)}`
-          : "http://localhost:3000/api/getUsers";
+    try {
+      const endpoint = searchQuery
+        ? `http://localhost:3000/api/search/users?q=${encodeURIComponent(searchQuery)}`
+        : "http://localhost:3000/api/getUsers";
 
-        const response = await fetch(endpoint, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-        });
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
 
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          throw new Error(
-            `Error: ${response.status} ${response.statusText}\n${errorMessage}`,
-          );
-        }
-
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setUsers(
-            searchQuery ? data.map((result: any) => result._source) : data,
-          );
-        } else {
-          throw new Error("Response is not an array");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+          `Error: ${response.status} ${response.statusText}\n${errorMessage}`,
+        );
       }
-    };
 
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setUsers(
+          searchQuery ? data.map((result: any) => result._source) : data,
+        );
+      } else {
+        throw new Error("Response is not an array");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchUsers();
   }, [searchQuery]);
 
@@ -127,11 +127,7 @@ export const UserList = () => {
 
   const handleUpdate = (updatedUser: User) => {
     console.log(updatedUser);
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === updatedUser.id ? updatedUser : user,
-      ),
-    );
+    fetchUsers();
     handleCloseModal();
   };
 
@@ -185,7 +181,7 @@ export const UserList = () => {
                     <TableData>{user.phoneNumber}</TableData>
                     <TableData>
                       {user.DOB
-                        ? new Date(user.DOB).toISOString().slice(0, 10)
+                        ? new Date(user.DOB).toLocaleDateString()
                         : "Invalid Date"}
                     </TableData>
                     <TableData>

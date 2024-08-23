@@ -49,7 +49,7 @@ export const EditProfile = () => {
         if (!response.ok) {
           const text = await response.text();
           throw new Error(
-            `Error: ${response.status} ${response.statusText}\n${text}`
+            `Error: ${response.status} ${response.statusText}\n${text}`,
           );
         }
         return response.json();
@@ -96,7 +96,7 @@ export const EditProfile = () => {
         if (!response.ok) {
           return response.text().then((text) => {
             throw new Error(
-              `Error: ${response.status} ${response.statusText}\n${text}`
+              `Error: ${response.status} ${response.statusText}\n${text}`,
             );
           });
         }
@@ -120,8 +120,9 @@ export const EditProfile = () => {
         <img
           className="w-32 h-32 rounded-full"
           src="/profile.jpg"
-          alt="image of the user"
+          alt="User profile"
         />
+
         <h5 className="mt-2 cursor-pointer hover:text-blue-600">Edit Photo</h5>
 
         <div className="text-base bg-zinc-300 mt-5 p-5 w-4/5 grid gap-2 grid-cols-2 rounded-lg flex-wrap mb-4">

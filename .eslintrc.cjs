@@ -6,7 +6,11 @@ module.exports = {
       "typescript": {
         "project": ["tsconfig.app.json"]
       }
-    }
+    },
+    react: { version: "18.2" } 
+    
+
+
   },
   extends: [
     "eslint:recommended",
@@ -18,7 +22,6 @@ module.exports = {
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
-  settings: { react: { version: "18.2" } },
   plugins: ["react-refresh", "import", "prettier"],
   rules: {
     "react/jsx-no-target-blank": "off",
