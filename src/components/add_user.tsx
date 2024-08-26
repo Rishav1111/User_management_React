@@ -9,19 +9,19 @@ export const CreateUserForm = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [age, setAge] = useState("");
+  const [DOB, setDOB] = useState("");
   const [role, setRole] = useState("user");
   const [fullnameValidation, setFullnameValidation] = useState("");
   const [emailValidation, setEmailValidation] = useState("");
   const [phoneNumberValidation, setPhoneNumberValidation] = useState("");
-  const [ageValidation, setAgeValidation] = useState("");
+  const [DOBValidation, setDOBValidation] = useState("");
 
   const validateForm = () => {
     let isValid = true;
     setFullnameValidation("");
     setEmailValidation("");
     setPhoneNumberValidation("");
-    setAgeValidation("");
+    setDOBValidation("");
 
     if (!fullname) {
       setFullnameValidation("Please enter your full name");
@@ -32,11 +32,11 @@ export const CreateUserForm = () => {
       isValid = false;
     }
     if (!phoneNumber) {
-      setPhoneNumberValidation("Please enter your phone number");
+      setPhoneNumberValidation("Please enter your phone number.");
       isValid = false;
     }
-    if (!age) {
-      setAgeValidation("Please enter your age");
+    if (!DOB) {
+      setDOBValidation("Please enter your age");
       isValid = false;
     }
 
@@ -62,10 +62,10 @@ export const CreateUserForm = () => {
               fullname,
               email,
               phoneNumber,
-              age,
-              role: [{ name: role }],
+              DOB,
+              roleId: role,
             }),
-          }
+          },
         );
 
         const data = await response.json();
@@ -76,7 +76,7 @@ export const CreateUserForm = () => {
           setFullname("");
           setEmail("");
           setPhoneNumber("");
-          setAge("");
+          setDOB("");
           setRole("user");
         } else {
           alert("Failed to create user");
@@ -91,7 +91,6 @@ export const CreateUserForm = () => {
 
   return (
     <>
-      <Navbar />
       <div className="flex justify-center items-center h-screen w-1/2">
         <div className="w-full max-w-md bg-white m-2 p-5 rounded-md">
           <h2 className="font-bold text-lg text-center mb-4">Add User</h2>
@@ -123,15 +122,15 @@ export const CreateUserForm = () => {
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
             <p className="text-red-500 text-sm mb-4">{phoneNumberValidation}</p>
-            <Label htmlFor="age" text="Age:" />
+            <Label htmlFor="date" text="DOB:" />
             <Input
-              type="number"
-              name="age"
-              id="age"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
+              type="date"
+              id="date"
+              name="date"
+              value={DOB}
+              onChange={(e) => setDOB(e.target.value)}
             />
-            <p className="text-red-500 text-sm mb-4">{ageValidation}</p>
+            <p className="text-red-500 text-sm mb-4">{DOBValidation}</p>
             <Label htmlFor="role" text="Role:" />
             <select
               name="role"
@@ -148,7 +147,7 @@ export const CreateUserForm = () => {
               type="submit"
               text="Add User"
               onClick={handleSubmit}
-              color="bg-blue-500"
+              color="bg-blue-500 hover:bg-blue-800"
             />
           </form>
         </div>

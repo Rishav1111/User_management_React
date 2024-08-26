@@ -11,7 +11,6 @@ interface EditProfileForm {
   fullname: string;
   email: string;
   phoneNumber: string;
-  gender: string;
   DOB: number;
 }
 
@@ -24,7 +23,6 @@ export const EditProfile = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("Male");
   const [DOB, setDob] = useState("");
 
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +47,7 @@ export const EditProfile = () => {
         if (!response.ok) {
           const text = await response.text();
           throw new Error(
-            `Error: ${response.status} ${response.statusText}\n${text}`
+            `Error: ${response.status} ${response.statusText}\n${text}`,
           );
         }
         return response.json();
@@ -96,7 +94,7 @@ export const EditProfile = () => {
         if (!response.ok) {
           return response.text().then((text) => {
             throw new Error(
-              `Error: ${response.status} ${response.statusText}\n${text}`
+              `Error: ${response.status} ${response.statusText}\n${text}`,
             );
           });
         }
@@ -112,7 +110,6 @@ export const EditProfile = () => {
   }
   return (
     <>
-      <Navbar />
       <div className="flex flex-col flex-wrap items-center p-5 h-auto w-3/5 m-10 rounded bg-white shadow-lg">
         <h2 className="mb-5 text-center font-bold text-xl">
           Edit Personal Details
@@ -120,8 +117,9 @@ export const EditProfile = () => {
         <img
           className="w-32 h-32 rounded-full"
           src="/profile.jpg"
-          alt="image of the user"
+          alt="User profile"
         />
+
         <h5 className="mt-2 cursor-pointer hover:text-blue-600">Edit Photo</h5>
 
         <div className="text-base bg-zinc-300 mt-5 p-5 w-4/5 grid gap-2 grid-cols-2 rounded-lg flex-wrap mb-4">
@@ -151,14 +149,7 @@ export const EditProfile = () => {
               target: { value: React.SetStateAction<string> };
             }) => setPhoneNumber(e.target.value)}
           />
-          <Label htmlFor="gender" text="Gender:" />
-          <Input
-            type="text"
-            id="gender"
-            name="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          />
+
           <Label htmlFor="date" text="DOB:" />
           <Input
             type="date"

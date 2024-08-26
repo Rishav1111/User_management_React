@@ -7,6 +7,18 @@ import Button from "./button";
 interface DecodedToken {
   role: string[];
 }
+const ButtonLink = ({ to, text }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) =>
+      `px-8 py-2 m-3 rounded-2xl text-white font-semibold ${
+        isActive ? "bg-blue-900" : "bg-blue-600 hover:bg-blue-900"
+      }`
+    }
+  >
+    {text}
+  </NavLink>
+);
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,25 +29,27 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    setInterval(() => {
+      const token = Cookies.get("token");
 
-    if (!token) {
-      setIsLoggedIn(false);
-      return;
-    }
+      if (!token) {
+        setIsLoggedIn(false);
+        return;
+      }
 
-    try {
-      const decodedToken = jwtDecode<DecodedToken>(token);
-      setRole(decodedToken.role);
-      setIsLoggedIn(true);
-    } catch (error) {
-      Cookies.remove("token");
-      setIsLoggedIn(false);
-    }
+      try {
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        setRole(decodedToken.role);
+        setIsLoggedIn(true);
+      } catch (error) {
+        Cookies.remove("token");
+        setIsLoggedIn(false);
+      }
+    }, 1);
   }, [navigate]);
 
   const handleLogout = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
     Cookies.remove("token");
@@ -48,17 +62,22 @@ const Navbar = () => {
   };
   const toggleUsersMenu = () => {
     setIsUsersOpen(!isUsersOpen);
-    setIsSettingsOpen(false); // Close Settings dropdown when opening Users dropdown
+    setIsSettingsOpen(false);
   };
 
   const toggleSettingsMenu = () => {
     setIsSettingsOpen(!isSettingsOpen);
-    setIsUsersOpen(false); // Close Users dropdown when opening Settings dropdown
+    setIsUsersOpen(false);
+  };
+
+  const handleNavLinkClick = () => {
+    setIsUsersOpen(false);
+    setIsSettingsOpen(false);
   };
 
   return (
-    <header className="bg-gray-800 w-full p-2">
-      <nav className="container mx-auto flex flex-wrap items-center justify-between">
+    <header className="bg-gray-800 w-full max-w-full p-2">
+      <nav className="container mx-auto flex flex-wrap items-center justify-between relative">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <span className="text-lg sm:text-2xl font-bold">UBA-IMS</span>
         </div>
@@ -126,20 +145,22 @@ const Navbar = () => {
                       {isUsersOpen && (
                         <ul className="absolute left-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg">
                           <li>
-                            <a
-                              href="/users"
+                            <NavLink
+                              to="/users"
+                              onClick={handleNavLinkClick}
                               className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
                             >
                               User Lists
-                            </a>
+                            </NavLink>
                           </li>
                           <li>
-                            <a
-                              href="/createUser"
+                            <NavLink
+                              to="/createUser"
+                              onClick={handleNavLinkClick}
                               className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
                             >
                               Add User
-                            </a>
+                            </NavLink>
                           </li>
                         </ul>
                       )}
@@ -198,20 +219,22 @@ const Navbar = () => {
                   {isSettingsOpen && (
                     <ul className="absolute left-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg">
                       <li>
-                        <a
-                          href="/edit_profile"
+                        <NavLink
+                          to="/edit_profile"
+                          onClick={handleNavLinkClick} // Close the dropdown on click
                           className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
                         >
                           User Profile
-                        </a>
+                        </NavLink>
                       </li>
                       <li>
-                        <a
-                          href="/user/change_password"
+                        <NavLink
+                          to="/user/change_password"
+                          onClick={handleNavLinkClick} // Close the dropdown on click
                           className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
                         >
                           Change Password
-                        </a>
+                        </NavLink>
                       </li>
                     </ul>
                   )}
@@ -229,18 +252,8 @@ const Navbar = () => {
             </>
           ) : (
             <div className="flex space-x-4">
-              <Button
-                color="bg-blue-600 hover:bg-blue-900"
-                type="button"
-                text="Login"
-                onClick={() => navigate("/login")}
-              />
-              <Button
-                color="bg-blue-600 hover:bg-blue-900"
-                type="button"
-                text="Signup"
-                onClick={() => navigate("/signup")}
-              />
+              <ButtonLink to="/login" text="Login" />
+              <ButtonLink to="/signup" text="Signup" />
             </div>
           )}
         </div>

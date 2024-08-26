@@ -1,12 +1,16 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
-  settings: {
-    "import/extensions": {
-      node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
-      },
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "project": ["tsconfig.app.json"]
+      }
     },
+    react: { version: "18.2" } 
+    
+
+
   },
   extends: [
     "eslint:recommended",
@@ -18,7 +22,6 @@ module.exports = {
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
-  settings: { react: { version: "18.2" } },
   plugins: ["react-refresh", "import", "prettier"],
   rules: {
     "react/jsx-no-target-blank": "off",
@@ -33,6 +36,7 @@ module.exports = {
         "parser": "flow",
       }
     ],
+    'no:convert': 1,
 
     "import/order": [
       "error",

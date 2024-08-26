@@ -9,8 +9,7 @@ import { toast } from "react-toastify";
 interface EditUserFormProps {
   user: User;
 
-
-  onUpdateUser: (updatedUser: User) => void
+  onUpdateUser: (updatedUser: User) => void;
 
   onClose: () => void;
 }
@@ -23,7 +22,9 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
   const [fullname, setFullname] = useState(user.fullname);
   const [email, setEmail] = useState(user.email);
   const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
-  const [DOB, setAge] = useState(user.DOB);
+  const [DOB, setDOB] = useState(
+    user.DOB ? new Date(user.DOB).toISOString().substring(0, 10) : "",
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
         if (!response.ok) {
           return response.text().then((text) => {
             throw new Error(
-              `Error: ${response.status} ${response.statusText}\n${text}`
+              `Error: ${response.status} ${response.statusText}\n${text}`,
             );
           });
         }
@@ -99,7 +100,7 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
           <Input
             type="date"
             value={DOB}
-            onChange={(e) => setAge(parseInt(e.target.value))}
+            onChange={(e) => setDOB(e.target.value)}
             id={"DOB"}
             name={"DOB"}
           />

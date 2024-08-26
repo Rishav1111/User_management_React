@@ -1,4 +1,3 @@
-import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Label from "./label";
 import Button from "./button";
@@ -6,6 +5,7 @@ import Input from "./input";
 import { FcGoogle } from "react-icons/fc";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import React, { useState } from "react";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -35,7 +35,7 @@ export const LoginForm = () => {
     return isValid;
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
       try {
@@ -50,9 +50,7 @@ export const LoginForm = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          setLoginError(
-            errorData.message || "Please check your credentials and try again."
-          );
+          setLoginError(errorData.message || "Please check your credentials.");
           return toast.error(loginError);
         }
 
@@ -78,84 +76,81 @@ export const LoginForm = () => {
   };
 
   return (
-    <>
-      <div className="flex md:flex flex-wrap content-center items-center w-40% m-28 p-5 max-w-4xl rounded-xl bg-white shadow-lg">
-        <div className="flex flex-1 justify-center items-center p-10">
-          <img className="w-30% h-full rounded" src="/login.jpg" alt="" />
-        </div>
-        <div className="text-gray-800 flex-1 items-center bg-transparent p-3">
-          <form
-            id="login"
-            className="flex flex-col m-3 mt-5 p-5"
-            onSubmit={handleSubmit}
-          >
-            <h2 className="mb-5 text-center font-bold text-xl">Login</h2>
-            <Label htmlFor="email" text="Email: " />
-            <Input
-              type="email"
-              name="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {emailValidation && (
-              <p className="text-red-500 text-sm mb-4">{emailValidation}</p>
-            )}
+    <div className="flex md:flex flex-wrap content-center items-center w-40% m-28 p-5 max-w-4xl rounded-xl bg-white shadow-lg">
+      <div className="flex flex-1 justify-center items-center p-10">
+        <img className="w-30% h-full rounded" src="/login.jpg" alt="" />
+      </div>
+      <div className="text-gray-800 flex-1 items-center bg-transparent p-3">
+        <form
+          id="login"
+          className="flex flex-col m-3 mt-5 p-5"
+          onSubmit={handleSubmit}
+        >
+          <h2 className="mb-5 text-center font-bold text-xl">Login</h2>
+          <Label htmlFor="email" text="Email: " />
+          <Input
+            type="email"
+            name="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {emailValidation && (
+            <p className="text-red-500 text-sm mb-4">{emailValidation}</p>
+          )}
 
-            <Label htmlFor="password" text="Password:" />
-            <Input
-              type="password"
-              name="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {passwordValidation && (
-              <p className="text-red-500 text-sm mb-4">{passwordValidation}</p>
-            )}
+          <Label htmlFor="password" text="Password:" />
+          <Input
+            type="password"
+            name="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {passwordValidation && (
+            <p className="text-red-500 text-sm mb-4">{passwordValidation}</p>
+          )}
 
-            {/* {loginError && (
+          {/* {loginError && (
               <p className="text-red-500 text-sm mb-4">{loginError}</p>
             )} */}
 
-            <div className="flex space-x-24">
-              <div className="flex justify-center items-center text-xs font-bold text-gray-700 space-x-2">
-                <input type="checkbox" id="rememberMe" name="rememberMe" />
-                <Label htmlFor="rememberme" text="Remember Me" />
-              </div>
-              <a
-                href="#"
-                className="text-xs m-2 font-bold self-end text-gray-700 hover:text-blue-900"
-              >
-                {" "}
-                Forget Password?
-              </a>
+          <div className="flex space-x-24">
+            <div className="flex justify-center items-center text-xs font-bold text-gray-700 space-x-2">
+              <input type="checkbox" id="rememberMe" name="rememberMe" />
+              <Label htmlFor="rememberme" text="Remember Me" />
             </div>
-            <Button
-              color="bg-gray-600 hover:bg-gray-700"
-              type="submit"
-              text="Login"
+            <button
               onClick={() => {}}
-            />
-            <div className="flex justify-center items-center text-xs  text-gray-700 space-x-2">
-              <div className="border-t border-gray-400 w-1/4"></div>
-              <p className="text-xs">or login with</p>
-              <div className="border-t border-gray-400 w-1/4"></div>
-            </div>
-            <div className="flex justify-center items-center space-x-2 mt-4 cursor-pointer">
-              {/* <FaFacebook /> */}
-              <FcGoogle />
-            </div>
+              className="text-xs m-2 font-bold self-end text-gray-700 hover:text-blue-900"
+            >
+              Forget Password?
+            </button>
+          </div>
+          <Button
+            color="bg-gray-600 hover:bg-gray-700"
+            type="submit"
+            text="Login"
+            onClick={() => {}}
+          />
+          <div className="flex justify-center items-center text-xs  text-gray-700 space-x-2">
+            <div className="border-t border-gray-400 w-1/4"></div>
+            <p className="text-xs">or login with</p>
+            <div className="border-t border-gray-400 w-1/4"></div>
+          </div>
+          <div className="flex justify-center items-center space-x-2 mt-4 cursor-pointer">
+            {/* <FaFacebook /> */}
+            <FcGoogle />
+          </div>
 
-            <div className="flex self-center text-sm">
-              <p className="mt-4">Don't have an account?</p>
-              <a href="/signup" className="mt-4 hover:text-blue-900 font-bold">
-                Sign Up
-              </a>
-            </div>
-          </form>
-        </div>
+          <div className="flex self-center text-sm">
+            <p className="mt-4">Don&apos;t have an account?</p>
+            <a href="/signup" className="mt-4 hover:text-blue-900 font-bold">
+              Sign Up
+            </a>
+          </div>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
