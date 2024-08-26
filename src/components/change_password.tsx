@@ -42,7 +42,7 @@ export const ChangePassword = () => {
       isValid = false;
     } else if (newpassword === oldpassword) {
       setNewpasswordValidation(
-        "New password must be different from old password"
+        "New password must be different from old password",
       );
       isValid = false;
     }
@@ -70,7 +70,7 @@ export const ChangePassword = () => {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ oldpassword, newpassword, confirmpassword }),
-          }
+          },
         );
 
         const data = await response.json();
@@ -92,7 +92,6 @@ export const ChangePassword = () => {
 
   return (
     <>
-      <Navbar />
       <div className="flex justify-center items-center h-screen w-1/2">
         <div className="w-4/5 max-w-sm bg-white p-5 rounded-md">
           <h2 className="text-lg p-2 m-4 text-center font-bold">

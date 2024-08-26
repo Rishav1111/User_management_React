@@ -11,7 +11,6 @@ interface EditProfileForm {
   fullname: string;
   email: string;
   phoneNumber: string;
-  gender: string;
   DOB: number;
 }
 
@@ -24,7 +23,6 @@ export const EditProfile = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("Male");
   const [DOB, setDob] = useState("");
 
   const [error, setError] = useState<string | null>(null);
@@ -112,7 +110,6 @@ export const EditProfile = () => {
   }
   return (
     <>
-      <Navbar />
       <div className="flex flex-col flex-wrap items-center p-5 h-auto w-3/5 m-10 rounded bg-white shadow-lg">
         <h2 className="mb-5 text-center font-bold text-xl">
           Edit Personal Details
@@ -152,14 +149,7 @@ export const EditProfile = () => {
               target: { value: React.SetStateAction<string> };
             }) => setPhoneNumber(e.target.value)}
           />
-          <Label htmlFor="gender" text="Gender:" />
-          <Input
-            type="text"
-            id="gender"
-            name="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          />
+
           <Label htmlFor="date" text="DOB:" />
           <Input
             type="date"

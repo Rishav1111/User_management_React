@@ -68,7 +68,6 @@ export const InternList = () => {
 
   return (
     <>
-      <Navbar />
       <div className="bg-white p-5  m-20 w-2/3 rounded shadow-lg">
         <h2 className="mb-5 text-center font-bold text-sm sm:text-2xl">
           Internship Lists

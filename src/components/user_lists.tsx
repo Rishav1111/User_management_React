@@ -141,7 +141,6 @@ export const UserList = () => {
 
   return (
     <>
-      <Navbar />
       <div className="bg-white p-5 m-20 w-2/3  rounded shadow-lg">
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-center font-bold text-sm sm:text-2xl">
